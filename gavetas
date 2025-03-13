@@ -62,8 +62,8 @@ h1 {
 #drawer8 { background-color: #8BC34A; }
 #drawer9 { background-color: #3F51B5; }
 #drawer10 { background-color: #E91E63; }
-#drawer11 { background-color: #CDDC39; }  /*  Artigo */
-#drawer12 { background-color: #FFEB3B; }  /* Numeral */
+#drawer11 { background-color: #CDDC39; }  
+#drawer12 { background-color: #FFEB3B; }  
 
 .drawer:hover::after {
     content: '';
