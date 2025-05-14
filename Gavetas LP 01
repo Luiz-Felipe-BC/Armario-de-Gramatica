@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classes Gramaticais. Por Emanuel Fontana</title>
+
+    <style>
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+}
+
+.armario {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+.container {
+    width: 80%;
+    margin: 50px auto;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+/* Estilo geral das gavetas */
+.drawer {
+    padding: 20px;
+    margin: 10px 0;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    font-size: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.drawer:hover {
+    transform: translateY(-5px);
+}
+
+/* Estilos das gavetas com cores diferentes */
+#drawer1  { background-color: #4CAF50; }
+#drawer2  { background-color: #2196F3; }
+#drawer3  { background-color: #FF9800; }
+#drawer4  { background-color: #9C27B0; }
+#drawer5  { background-color: #FF5722; }
+#drawer6  { background-color: #607D8B; }
+#drawer7  { background-color: #00BCD4; }
+#drawer8  { background-color: #8BC34A; }
+#drawer9  { background-color: #3F51B5; }
+#drawer10 { background-color: #E91E63; }
+#drawer11 { background-color: #CDDC39; }  /*  Artigo */
+#drawer12 { background-color: #FFEB3B; }  /* Numeral */
+
+.drawer:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #f2f2f2;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.3s ease;
+}
+
+.drawer:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* Animação para as charadas e campos de entrada */
+.charada {
+    background-color: #fff;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.charada.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.input-group {
+    display: block;
+    margin: 15px 0;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.input-group.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.input-group input {
+    padding: 12px;
+    width: 70%;
+    font-size: 16px;
+    margin-right: 10px;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    box-sizing: border-box;
+}
+
+.input-group button {
+    padding: 12px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.input-group button:hover {
+    background-color: #45a049;
+    transform: translateY(-3px);
+}
+
+.feedback {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+}
+
+.content {
+    display: none;
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin-top: 10px;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+}
+
+.content.show {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.content h3 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.content ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.content li {
+    font-size: 18px;
+    color: #666;
+}
+
+/* Estilo do botão de explicação */
+.content button {
+    padding: 12px 25px;
+    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 25px; 
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    margin-top: 10px;
+}
+
+.content button:hover {
+    background-color: #45a049; 
+    transform: translateY(-3px); 
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); 
+}
+
+.content button:focus {
+    outline: none; 
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.6); 
+}
+
+
+    </style>
+
+</head>
+
+<script>
+    function showCharada(drawerNum) {
+        const charadaElement = document.getElementById('charada' + drawerNum);
+        const inputGroupElement = document.getElementById('input-group' + drawerNum);
+        const drawerElement = document.getElementById('drawer' + drawerNum);
+        const feedbackElement = document.getElementById('feedback' + drawerNum);
+        charadaElement.classList.toggle('show');
+        inputGroupElement.classList.toggle('show');
+        drawerElement.classList.toggle('show');
+    }
+
+    function checkKeyword(drawerNum) {
+        const keyword = document.getElementById('keyword' + drawerNum).value.toLowerCase();
+        const feedbackElement = document.getElementById('feedback' + drawerNum);
+        const validKeywords = [
+            ["substantivo"],
+            ["adjetivo"],
+            ["verbo"],
+            ["pronome"],
+            ["advérbio"],
+            ["preposição"],
+            ["conjunção"],
+            ["interjeição"],
+            ["artigo"],
+            ["numeral"]
+        ];
+
+        if (validKeywords[drawerNum - 1].includes(keyword)) {
+            feedbackElement.textContent = "Correto! Abra a gaveta para mais informações!";
+            document.getElementById('content' + drawerNum).classList.add('show');
+        } else {
+            feedbackElement.textContent = "Tente novamente!";
+        }
+    }
+
+    function explicacao(drawerNum) {
+        const contentElement = document.getElementById('content' + drawerNum);
+        let explanation = '';
+
+        switch (drawerNum) {
+            case 1:
+                explanation = `
+                <p><strong>Substantivo:</strong> O substantivo é a classe gramatical que nomeia seres, coisas, lugares, sentimentos, entre outros.Ele pode ser classificado como: </p>
+                <p><strong>Tipos de Substantivos:</strong></p>
+                <ul>
+                    <li><strong>Substantivo Comum:</strong> casa, livro, cachorro..</li>
+                    <li><strong>Substantivo Próprio:</strong> João, Brasil, Paris.</li>
+                    <li><strong>Substantivo Concreto:</strong> mesa, árvore, pedra.</li>
+                    <li><strong>Substantivo Abstrato:</strong> amor, dor, felicidade.</li>
+                </ul>
+            `;
+                                
+                break;
+            case 2:
+                explanation = `<p><strong>Adjetivo:</strong> O adjetivo é a classe gramatical que qualifica o substantivo, atribuindo-lhe características.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> Casa bonita, João feliz, livro interessante.</li>
+                </ul>
+                    <p><strong>Exemplos de adjetivos:</strong></p>
+                <ul>
+                     <li>Bonito, feio, grande, pequeno, alto, baixo, triste, feliz.</li>
+                </ul>
+            `;
+                break;
+
+            case 3: 
+                explanation = ` 
+                <p>O verbo indica uma ação, estado ou fenômeno. Ele pode ser conjugado em diversos tempos e modos.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> Correr, estudar, dormir, ser, estar, fazer.</li>
+                </ul>
+                    <p><strong>Exemplos de verbos:</strong></p>
+                <ul>
+                    <li>Correr, amar, estudar, dormir, ser, estar.</li>
+                </ul>   
+            `;
+                break;
+
+            case 4: 
+                explanation = ` 
+                <p>O pronome substitui ou acompanha o substantivo, evitando sua repetição.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> Eu, tu, ele, ela, nós, vós, eles, elas.</li>
+                </ul>     
+            `;
+                break;      
+            case 5: 
+                explanation = ` 
+                <p>O advérbio é a classe gramatical que modifica o verbo, o adjetivo ou outro advérbio, indicando tempo, lugar, modo, intensidade, etc.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> Rapidamente, muito, ontem, bem, mal.</li>
+                </ul>
+            `;
+                break;      
+            case 6: 
+                explanation = ` 
+                <p>A preposição estabelece uma relação entre dois termos da oração, como ligar palavras ou expressar diferentes tipos de relação.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> de, para, com, por, em.</li>
+                </ul>
+            `;
+                break;      
+            case 7: 
+                explanation = ` 
+                <p>A conjunção liga orações ou palavras, indicando relação entre elas.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> e, mas, porque, ou.</li>
+                </ul>
+            `;
+                break;      
+            case 8: 
+                explanation = ` 
+                <p>A interjeição expressa emoções, sentimentos ou reações de surpresa, espanto, alegria, etc.</p>
+                 <ul>
+                    <li><strong>Exemplo:</strong> Ah, uau, socorro, nossa, ei.</li>
+                </ul> 
+            `;
+                break;      
+            case 9: 
+                explanation = ` 
+                <p>O artigo é a palavra que acompanha o substantivo, determinando se é algo determinado ou indeterminado.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> o, a, os, as, um, uma, uns, umas.</li>
+                </ul> 
+            `;
+                break;      
+            case 10: 
+                explanation = ` 
+                <p>O numeral é a classe que expressa a quantidade ou ordem dos elementos.</p>
+                <ul>
+                    <li><strong>Exemplo:</strong> dois, terceiro, vinte, primeiro.</li>
+                </ul>
+            `;
+                break;      
+
+            // Adicionar mais cases para outras classes gramaticais conforme necessário.
+        }
+        contentElement.innerHTML = explanation;
+    }
+</script>
+
+<body>
+<div class="container">
+    <h1>Classes Gramaticais</h1>
+
+    <!-- Gavetas com Charadas -->
+    <!-- Gaveta Substantivo -->
+    <div id="drawer1" class="drawer" onclick="showCharada(1)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada1" class="charada">
+        <p>Sou o nome do que existe, seja coisa, pessoa ou animal. Às vezes sou concreto, às vezes sou abstrato. Quem sou eu?</p>
+        <div class="input-group" id="input-group1">
+            <input type="text" id="keyword1" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(1)">OK</button>
+        </div>
+        <div id="feedback1" class="feedback"></div>
+        <div id="content1" class="content">
+            <button onclick="explicacao(1)">Substantivo</button>
+        </div>
+    </div>
+
+
+
+    <!-- Gaveta Adjetivo -->
+    <div id="drawer2" class="drawer" onclick="showCharada(2)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada2" class="charada">
+        <p>Eu sou quem descreve o substantivo e digo como ele é. Posso ser bonito, grande ou triste. Quem sou eu?</p>
+        <div class="input-group" id="input-group2">
+            <input type="text" id="keyword2" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(2)">OK</button>
+        </div>
+        <div id="feedback2" class="feedback"></div>
+        <div id="content2" class="content">
+            <button onclick="explicacao(2)">Adjetivo</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Verbo -->
+    <div id="drawer3" class="drawer" onclick="showCharada(3)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada3" class="charada">
+        <p>Eu sou o que dá movimento à frase, sou quem faz, quem sente, quem está. O que sou?</p>
+        <div class="input-group" id="input-group3">
+            <input type="text" id="keyword3" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(3)">OK</button>
+        </div>
+        <div id="feedback3" class="feedback"></div>
+        <div id="content3" class="content">
+            <button onclick="explicacao(3)">Verbo</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Pronome -->
+    <div id="drawer4" class="drawer" onclick="showCharada(4)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada4" class="charada">
+        <p>Eu substituo o substantivo, evitando sua repetição. Quem sou eu?</p>
+        <div class="input-group" id="input-group4">
+            <input type="text" id="keyword4" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(4)">OK</button>
+        </div>
+        <div id="feedback4" class="feedback"></div>
+        <div id="content4" class="content">
+            <button onclick="explicacao(4)">Pronome</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Adverbio -->
+    <div id="drawer5" class="drawer" onclick="showCharada(5)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada5" class="charada">
+        <p>Eu modifico o verbo, o adjetivo ou o próprio advérbio, indicando como, quando, onde, etc. Quem sou eu?</p>
+        <div class="input-group" id="input-group5">
+            <input type="text" id="keyword5" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(5)">OK</button>
+        </div>
+        <div id="feedback5" class="feedback"></div>
+        <div id="content5" class="content">
+            <button onclick="explicacao(5)">Adverbio</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Preposição -->
+    <div id="drawer6" class="drawer" onclick="showCharada(6)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada6" class="charada">
+        <p>Eu ligo palavras, estabelecendo uma relação entre elas. Quem sou eu?</p>
+        <div class="input-group" id="input-group6">
+            <input type="text" id="keyword6" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(6)">OK</button>
+        </div>
+        <div id="feedback6" class="feedback"></div>
+        <div id="content6" class="content">
+            <button onclick="explicacao(6)">Preposição</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Conjunção -->
+    <div id="drawer7" class="drawer" onclick="showCharada(7)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada7" class="charada">
+        <p>Eu conecto orações ou palavras que têm a mesma função sintática. Quem sou eu?</p>
+        <div class="input-group" id="input-group7">
+            <input type="text" id="keyword7" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(7)">OK</button>
+        </div>
+        <div id="feedback7" class="feedback"></div>
+        <div id="content7" class="content">
+            <button onclick="explicacao(7)">Conjunção</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Interjeição -->
+    <div id="drawer8" class="drawer" onclick="showCharada(8)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada8" class="charada">
+        <p>Eu sou uma palavra ou expressão que expressa emoção ou reação de surpresa. Quem sou eu?</p>
+        <div class="input-group" id="input-group8">
+            <input type="text" id="keyword8" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(8)">OK</button>
+        </div>
+        <div id="feedback8" class="feedback"></div>
+        <div id="content8" class="content">
+            <button onclick="explicacao(8)">Interjeição</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Artigo -->
+    <div id="drawer9" class="drawer" onclick="showCharada(9)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada9" class="charada">
+        <p>Sou uma palavra que acompanha o substantivo, determinando se é algo determinado ou indeterminado. Quem sou eu?</p>
+        <div class="input-group" id="input-group9">
+            <input type="text" id="keyword9" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(9)">OK</button>
+        </div>
+        <div id="feedback9" class="feedback"></div>
+        <div id="content9" class="content">
+            <button onclick="explicacao(9)">Artigo</button>
+        </div>
+    </div>
+
+    <!-- Gaveta Numeral -->
+    <div id="drawer10" class="drawer" onclick="showCharada(10)">
+        Clique aqui para descobrir a classe gramatical!
+    </div>
+    <div id="charada10" class="charada">
+        <p>Eu indico quantidade, ordem ou fração. Quem sou eu?</p>
+        <div class="input-group" id="input-group10">
+            <input type="text" id="keyword10" placeholder="Digite a palavra-chave para abrir a gaveta" />
+            <button onclick="checkKeyword(10)">OK</button>
+        </div>
+        <div id="feedback10" class="feedback"></div>
+        <div id="content10" class="content">
+            <button onclick="explicacao(10)">Numeral</button>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>
